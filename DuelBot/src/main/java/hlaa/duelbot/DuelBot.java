@@ -33,274 +33,332 @@ import cz.cuni.amis.utils.IFilter;
 import cz.cuni.amis.utils.collections.MyCollections;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
+import java.util.LinkedList;
+import java.util.List;
 
 @AgentScoped
 public class DuelBot extends UT2004BotModuleController {
 
-	private long   lastLogicTime        = -1;
-    private long   logicIterationNumber = 0;
-	private Player focusedEnemy;
-	private int counter = 0;    
+    private long lastLogicTime = -1;
+    private long logicIterationNumber = 0;
+    private Player focusedEnemy;
+    private int counter = 0;
+
+    private List<Behavior> behaviors;
+    private Behavior currentBehavior = null;
+
+    private void AddBehaviors() {
+        behaviors = new LinkedList<>();
+        behaviors.add(new PursueBehavior(5));
+    }
 
     /**
-     * Here we can modify initializing command for our bot, e.g., sets its name or skin.
+     * Here we can modify initializing command for our bot, e.g., sets its name
+     * or skin.
      *
      * @return instance of {@link Initialize}
      */
     @Override
-    public Initialize getInitializeCommand() {  
-    	return new Initialize().setName("DuelBot").setSkin(UT2004Skins.getRandomSkin()).setDesiredSkill(6);
+    public Initialize getInitializeCommand() {
+        return new Initialize().setName("DuelBot").setSkin(UT2004Skins.getRandomSkin()).setDesiredSkill(6);
     }
 
     @Override
     public void botInitialized(GameInfo gameInfo, ConfigChange currentConfig, InitedMessage init) {
-    	bot.getLogger().getCategory("Yylex").setLevel(Level.OFF);
-    	
-    	weaponPrefs.addGeneralPref(UT2004ItemType.LIGHTNING_GUN, true);
-    	weaponPrefs.addGeneralPref(UT2004ItemType.SHOCK_RIFLE, true);
-    	weaponPrefs.addGeneralPref(UT2004ItemType.MINIGUN, false);
-    	weaponPrefs.addGeneralPref(UT2004ItemType.ROCKET_LAUNCHER, true);
-    	weaponPrefs.addGeneralPref(UT2004ItemType.ASSAULT_RIFLE, true);
-    	weaponPrefs.addGeneralPref(UT2004ItemType.LINK_GUN, false);
-    	weaponPrefs.addGeneralPref(UT2004ItemType.SHIELD_GUN, false);
-    	
-    	weaponPrefs.newPrefsRange(400)
-    		.add(UT2004ItemType.FLAK_CANNON, true)
-    		.add(UT2004ItemType.LINK_GUN, true)
-    		.add(UT2004ItemType.ROCKET_LAUNCHER, true);
-    	
-    	weaponPrefs.newPrefsRange(1050)
-    	    .add(UT2004ItemType.LIGHTNING_GUN, true)
-    	    .add(UT2004ItemType.SHOCK_RIFLE, true)
-    	    .add(UT2004ItemType.LINK_GUN, false)
-    	    .add(UT2004ItemType.MINIGUN, false);
+        bot.getLogger().getCategory("Yylex").setLevel(Level.OFF);
+
+        weaponPrefs.addGeneralPref(UT2004ItemType.LIGHTNING_GUN, true);
+        weaponPrefs.addGeneralPref(UT2004ItemType.SHOCK_RIFLE, true);
+        weaponPrefs.addGeneralPref(UT2004ItemType.MINIGUN, false);
+        weaponPrefs.addGeneralPref(UT2004ItemType.ROCKET_LAUNCHER, true);
+        weaponPrefs.addGeneralPref(UT2004ItemType.ASSAULT_RIFLE, true);
+        weaponPrefs.addGeneralPref(UT2004ItemType.LINK_GUN, false);
+        weaponPrefs.addGeneralPref(UT2004ItemType.SHIELD_GUN, false);
+
+        weaponPrefs.newPrefsRange(400)
+                .add(UT2004ItemType.FLAK_CANNON, true)
+                .add(UT2004ItemType.LINK_GUN, true)
+                .add(UT2004ItemType.ROCKET_LAUNCHER, true);
+
+        weaponPrefs.newPrefsRange(1050)
+                .add(UT2004ItemType.LIGHTNING_GUN, true)
+                .add(UT2004ItemType.SHOCK_RIFLE, true)
+                .add(UT2004ItemType.LINK_GUN, false)
+                .add(UT2004ItemType.MINIGUN, false);
+
+        AddBehaviors();
     }
-    
+
     @Override
     public void botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self) {
         navigation.addStrongNavigationListener(new FlagListener<NavigationState>() {
-			@Override
-			public void flagChanged(NavigationState changedValue) {
-				navigationStateChanged(changedValue);
-			}
+            @Override
+            public void flagChanged(NavigationState changedValue) {
+                navigationStateChanged(changedValue);
+            }
         });
     }
-    
+
     /**
      * The navigation state has changed...
+     *
      * @param changedValue
      */
     private void navigationStateChanged(NavigationState changedValue) {
-    	switch(changedValue) {
-    	case TARGET_REACHED:
-    		return;
-		case PATH_COMPUTATION_FAILED:
-			return;
-		case STUCK:
-			return;
-		}
+        switch (changedValue) {
+            case TARGET_REACHED:
+                return;
+            case PATH_COMPUTATION_FAILED:
+                return;
+            case STUCK:
+                return;
+        }
     }
-    
+
     @Override
     public void beforeFirstLogic() {
     }
-    
+
     // ====================
     // BOT MIND MAIN METHOD
     // ====================
-        
     @Override
     public void logic() throws PogamutException {
-    	if (lastLogicTime < 0) {
-    		lastLogicTime = System.currentTimeMillis();
-    		return;
-    	}
+        if (lastLogicTime < 0) {
+            lastLogicTime = System.currentTimeMillis();
+            return;
+        }
 
-    	log.info("---LOGIC: " + (++logicIterationNumber) + " / D=" + (System.currentTimeMillis() - lastLogicTime) + "ms ---");
-    	lastLogicTime = System.currentTimeMillis();
+        log.info("---LOGIC: " + (++logicIterationNumber) + " / D=" + (System.currentTimeMillis() - lastLogicTime) + "ms ---");
+        lastLogicTime = System.currentTimeMillis();
 
-    	// FOLLOWS THE BOT'S LOGIC
-    	
-    	// use Bot Name to visualize high-level state of your bot to ease debugging
-    	setDebugInfo("BRAIN-DEAD");
-    	
-    	if (combatBeh()) return;
-    	fireAtEnemy();
-    	if (pursueEnemy()) return;
-    	focusEnemy();    	
-    	collectItems();    	
+        // FOLLOWS THE BOT'S LOGIC
+        // use Bot Name to visualize high-level state of your bot to ease debugging
+        setDebugInfo("BRAIN-DEAD");
+        // TODO test if current behavior ended
+        Behavior nextBeahvior = null;
+        ConditionDto conditionEvaluation = EvaluateConditions();
+        for (Behavior behavior : behaviors) {
+            if (behavior.IsUsable(conditionEvaluation)) {
+                if (nextBeahvior == null || behavior.GetPriority() > nextBeahvior.GetPriority()) {
+                    nextBeahvior = behavior;
+                }  
+            }
+        }
+
+        if (combatBeh()) {
+            return;
+        }
+        fireAtEnemy();
+        if (pursueEnemy()) {
+            return;
+        }
+        focusEnemy();
+        collectItems();
     }
-    
+
     private boolean combatBeh() {
-		if (!players.canSeeEnemies()) return false;
-		focusedEnemy = players.getNearestVisibleEnemy();
-		focusEnemy();
-    	fireAtEnemy();
-    	approachEnemy();
-    	return true;
-	}
+        if (!players.canSeeEnemies()) {
+            return false;
+        }
+        focusedEnemy = players.getNearestVisibleEnemy();
+        focusEnemy();
+        fireAtEnemy();
+        approachEnemy();
+        return true;
+    }
 
-	private boolean approachEnemy() {
-		if (!players.canSeeEnemies()) return false;
-		navigation.navigate(players.getNearestVisibleEnemy());
-		return true;
-	}
+    private boolean approachEnemy() {
+        if (!players.canSeeEnemies()) {
+            return false;
+        }
+        navigation.navigate(players.getNearestVisibleEnemy());
+        return true;
+    }
 
-	private boolean pursueEnemy() {
-		if (focusedEnemy == null) return false;
-		if (info.atLocation(focusedEnemy.getLocation())) {
-			focusedEnemy = null;
-			return false;
-		}
-		if (!navigation.isNavigating()) {
-			focusedEnemy = null;
-			return false;
-		}
-		navigation.navigate(focusedEnemy);
-		return true;
-	}
+    private boolean pursueEnemy() {
+        if (focusedEnemy == null) {
+            return false;
+        }
+        if (info.atLocation(focusedEnemy.getLocation())) {
+            focusedEnemy = null;
+            return false;
+        }
+        if (!navigation.isNavigating()) {
+            focusedEnemy = null;
+            return false;
+        }
+        navigation.navigate(focusedEnemy);
+        return true;
+    }
 
-	private boolean focusEnemy() {
-		if (focusedEnemy == null) {
-			navigation.setFocus(null);
-			return false;
-		}
-		navigation.setFocus(focusedEnemy);
-		return true;
-	}
+    private boolean focusEnemy() {
+        if (focusedEnemy == null) {
+            navigation.setFocus(null);
+            return false;
+        }
+        navigation.setFocus(focusedEnemy);
+        return true;
+    }
 
-	private boolean fireAtEnemy() {
-		if (!players.canSeeEnemies()) {
-			shoot.stopShooting();
-			return false;
-		}
-		shoot.shoot(weaponPrefs, players.getNearestVisibleEnemy());
-		return true;
-	}
+    private boolean fireAtEnemy() {
+        if (!players.canSeeEnemies()) {
+            shoot.stopShooting();
+            return false;
+        }
+        shoot.shoot(weaponPrefs, players.getNearestVisibleEnemy());
+        return true;
+    }
 
-	private void collectItems() {
-		Item item = DistanceUtils.getNearest(
-				MyCollections.getFiltered(
-						items.getSpawnedItems().values(), 
-						new IFilter<Item>() {
-							@Override
-							public boolean isAccepted(Item object) {
-								// You might try to use this to time pickupus...
-								//items.isPickupSpawned(item)
-								//items.willPickupBeSpawnedIn(item, seconds)
-								//UnrealUtils.CHARACTER_RUN_SPEED // UT_units/sec
-								return items.isPickable(object);
-							}
-				}), 
-				info.getLocation(), 
-				new IGetDistance<Item>() {
+    private void collectItems() {
+        Item item = DistanceUtils.getNearest(
+                MyCollections.getFiltered(
+                        items.getSpawnedItems().values(),
+                        new IFilter<Item>() {
+                            @Override
+                            public boolean isAccepted(Item object) {
+                                // You might try to use this to time pickupus...
+                                //items.isPickupSpawned(item)
+                                //items.willPickupBeSpawnedIn(item, seconds)
+                                //UnrealUtils.CHARACTER_RUN_SPEED // UT_units/sec
+                                return items.isPickable(object);
+                            }
+                        }),
+                info.getLocation(),
+                new IGetDistance<Item>() {
 
-					@Override
-					public double getDistance(Item object, ILocated target) {
-						double multi = 1;
-						if (object.getType() == UT2004ItemType.LIGHTNING_GUN) multi = 0.5;
-						if (object.getType() == UT2004ItemType.FLAK_CANNON) multi = 0.6;
-						if (object.getType() == UT2004ItemType.SUPER_SHIELD_PACK) multi = 0.6;
-						if (object.getType() == UT2004ItemType.U_DAMAGE_PACK) multi = 0.3;
-						if (object.getType() == UT2004ItemType.SHIELD_PACK) multi = 0.7;
-						if (object.getType() == UT2004ItemType.SUPER_HEALTH_PACK) multi = 0.4;
-						if (object.getType().getCategory() == ItemType.Category.AMMO) multi = Double.POSITIVE_INFINITY;
-						return multi * navMeshModule.getAStarPathPlanner().getDistance(target, object);
-					}
-					
-				});
-		if (item == null) {
-			if (!navigation.isNavigating()) navigation.navigate(navPoints.getRandomNavPoint());
-		} else {
-			navigation.navigate(item);
-		}
-	}
+                    @Override
+                    public double getDistance(Item object, ILocated target) {
+                        double multi = 1;
+                        if (object.getType() == UT2004ItemType.LIGHTNING_GUN) {
+                            multi = 0.5;
+                        }
+                        if (object.getType() == UT2004ItemType.FLAK_CANNON) {
+                            multi = 0.6;
+                        }
+                        if (object.getType() == UT2004ItemType.SUPER_SHIELD_PACK) {
+                            multi = 0.6;
+                        }
+                        if (object.getType() == UT2004ItemType.U_DAMAGE_PACK) {
+                            multi = 0.3;
+                        }
+                        if (object.getType() == UT2004ItemType.SHIELD_PACK) {
+                            multi = 0.7;
+                        }
+                        if (object.getType() == UT2004ItemType.SUPER_HEALTH_PACK) {
+                            multi = 0.4;
+                        }
+                        if (object.getType().getCategory() == ItemType.Category.AMMO) {
+                            multi = Double.POSITIVE_INFINITY;
+                        }
+                        return multi * navMeshModule.getAStarPathPlanner().getDistance(target, object);
+                    }
 
-	// ==============
+                });
+        if (item == null) {
+            if (!navigation.isNavigating()) {
+                navigation.navigate(navPoints.getRandomNavPoint());
+            }
+        } else {
+            navigation.navigate(item);
+        }
+    }
+
+    // ==============
     // EVENT HANDLERS
     // ==============
-    
     /**
      * You have just picked up some item.
+     *
      * @param event
      */
-    @EventListener(eventClass=ItemPickedUp.class)
+    @EventListener(eventClass = ItemPickedUp.class)
     public void itemPickedUp(ItemPickedUp event) {
-    	if (info.getSelf() == null) return; // ignore the first equipment...
-    	Item pickedUp = items.getItem(event.getId());
-    	if (pickedUp == null) return; // ignore unknown items
+        if (info.getSelf() == null) {
+            return; // ignore the first equipment...
+        }
+        Item pickedUp = items.getItem(event.getId());
+        if (pickedUp == null) {
+            return; // ignore unknown items
+        }
     }
-    
+
     /**
      * YOUR bot has just been damaged.
+     *
      * @param event
      */
-    @EventListener(eventClass=BotDamaged.class)
+    @EventListener(eventClass = BotDamaged.class)
     public void botDamaged(BotDamaged event) {
     }
 
     /**
-     * YOUR bot has just been killed. 
+     * YOUR bot has just been killed.
      */
     @Override
     public void botKilled(BotKilled event) {
         sayGlobal("I was KILLED!");
-        
+
         navigation.stopNavigation();
         shoot.stopShooting();
-        
+
         // RESET YOUR MEMORY VARIABLES HERE
     }
-    
+
     /**
      * Some other BOT has just been damaged by someone (may be even by you).
+     *
      * @param event
      */
-    @EventListener(eventClass=PlayerDamaged.class)
+    @EventListener(eventClass = PlayerDamaged.class)
     public void playerDamaged(PlayerDamaged event) {
     }
-    
+
     /**
      * Some other BOT has just been killed by someone (may be even by you).
+     *
      * @param event
      */
-    @EventListener(eventClass=PlayerKilled.class)
+    @EventListener(eventClass = PlayerKilled.class)
     public void playerKilled(PlayerKilled event) {
-    	
+
     }
-    
-    @ObjectClassEventListener(eventClass=WorldObjectUpdatedEvent.class, objectClass=IncomingProjectile.class)
+
+    @ObjectClassEventListener(eventClass = WorldObjectUpdatedEvent.class, objectClass = IncomingProjectile.class)
     public void incomingProjectile(WorldObjectUpdatedEvent<IncomingProjectile> event) {
-    	event.getObject().getDirection();
-    	event.getObject().getSpeed();
+        event.getObject().getDirection();
+        event.getObject().getSpeed();
     }
 
     // =========
     // UTILITIES
     // =========
-    
     private void setDebugInfo(String info) {
-    	bot.getBotName().setInfo(info);
-    	bot.getBotName().setInfo("#", "" + ++counter );
-    	log.info(info);
+        bot.getBotName().setInfo(info);
+        bot.getBotName().setInfo("#", "" + ++counter);
+        log.info(info);
     }
-    
+
     private void sayGlobal(String msg) {
-    	// Simple way to send msg into the UT2004 chat
-    	body.getCommunication().sendGlobalTextMessage(msg);
-    	// And user log as well
-    	log.info(msg);
+        // Simple way to send msg into the UT2004 chat
+        body.getCommunication().sendGlobalTextMessage(msg);
+        // And user log as well
+        log.info(msg);
     }
-    
+
     // ===========
     // MAIN METHOD
     // ===========
-    
     public static void main(String args[]) throws PogamutException {
-        new UT2004BotRunner(     // class that wrapps logic for bots executions, suitable to run single bot in single JVM
-                DuelBot.class,   // which UT2004BotController it should instantiate
-                "DuelBot"        // what name the runner should be using
-        ).setMain(true)          // tells runner that is is executed inside MAIN method, thus it may block the thread and watch whether agent/s are correctly executed
-         .startAgents(2);        // tells the runner to start 2 agent
+        new UT2004BotRunner( // class that wrapps logic for bots executions, suitable to run single bot in single JVM
+                DuelBot.class, // which UT2004BotController it should instantiate
+                "DuelBot" // what name the runner should be using
+        ).setMain(true) // tells runner that is is executed inside MAIN method, thus it may block the thread and watch whether agent/s are correctly executed
+                .startAgents(2);        // tells the runner to start 2 agent
     }
+
+    private ConditionDto EvaluateConditions() {
+        return new ConditionDto(players.canSeeEnemies(), true);
+    }
+
 }
