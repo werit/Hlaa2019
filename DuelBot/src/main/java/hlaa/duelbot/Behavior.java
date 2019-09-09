@@ -23,14 +23,23 @@ package hlaa.duelbot;
  */
 public abstract class Behavior {
     // TODO what about priority
-    // TODO what about evaluation of preconditions
-    public Behavior(double priority){
-        this.Priority = priority;
-    }
+    protected ConditionDto RequiredConditions;
     private double Priority;
+    
+    public Behavior(double priority, ConditionDto requiredConditions)throws NullPointerException{
+        this.Priority = priority;
+        if (requiredConditions == null){
+            throw new NullPointerException("Required conditions cannot be null");
+        }
+        this.RequiredConditions = requiredConditions;
+    }
+    
     public abstract boolean Stop();
     public abstract void Execute();
-    public abstract boolean IsUsable(ConditionDto conditionDto);  
+    
+    public boolean IsUsable(ConditionDto conditionDto){
+        return RequiredConditions.AreConditionsMet(conditionDto);
+    }  
     public double GetPriority(){
         return this.Priority;
     }

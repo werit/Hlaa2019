@@ -24,7 +24,7 @@ package hlaa.duelbot;
 public class PursueBehavior extends Behavior{
 
     PursueBehavior(double priority){
-        super(priority);
+        super(priority, new ConditionDto(true, false));
     }
     @Override
     public boolean Stop() {
@@ -35,10 +35,4 @@ public class PursueBehavior extends Behavior{
     public void Execute() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public boolean IsUsable(ConditionDto conditionDto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }
