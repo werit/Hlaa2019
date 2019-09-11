@@ -21,18 +21,50 @@ package hlaa.duelbot;
  *
  * @author msi
  */
-public class PursueBehavior extends Behavior{
+public class PursueBehavior implements IBehavior{
 
-    PursueBehavior(double priority){
-        super(priority, new ConditionDto(true, false));
+    private double priority;
+    private BehaviorResource behaviorResource;
+    
+    PursueBehavior(double priority, BehaviorResource behaviorResource){
+    this.priority = priority;
+    this.behaviorResource = behaviorResource;
     }
     @Override
-    public boolean Stop() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public IBehavior Stop() {
+        return null;
     }
 
     @Override
-    public void Execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public IBehavior Execute() {
+        
+        behaviorResource.navigation.navigate(behaviorResource.focusedEnemy);
+        return this;
+    }
+
+    @Override
+    public BotCapabilities[] GetBotCapabilities() {
+        return new BotCapabilities[]{BotCapabilities.MOVE};
+    }
+
+    @Override
+    public boolean IsUsable(ConditionDto conditionDto) {
+        if (behaviorResource.focusedEnemy == null) {
+            return false;
+        }
+        if (behaviorResource.info.atLocation(behaviorResource.focusedEnemy.getLocation())) {
+            behaviorResource.focusedEnemy = null;
+            return false;
+        }
+        if (!behaviorResource.navigation.isNavigating()) {
+            behaviorResource.focusedEnemy = null;
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public double GetPriority() {
+        return this.priority;
     }
 }

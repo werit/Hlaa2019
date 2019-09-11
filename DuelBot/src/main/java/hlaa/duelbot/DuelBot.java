@@ -41,15 +41,19 @@ public class DuelBot extends UT2004BotModuleController {
 
     private long lastLogicTime = -1;
     private long logicIterationNumber = 0;
-    private Player focusedEnemy;
+    public Player focusedEnemy;
     private int counter = 0;
 
-    private List<Behavior> behaviors;
-    private Behavior currentBehavior = null;
-
+    private List<IBehavior> behaviors;
+    private IBehavior currentBehavior = null;
+    private BehaviorResource behaviorResource;
+    
+    private void InitializeBehaviourResources() {
+        behaviorResource = new BehaviorResource(info,navigation);
+    }
     private void AddBehaviors() {
         behaviors = new LinkedList<>();
-        behaviors.add(new PursueBehavior(5));
+        behaviors.add(new PursueBehavior(5,behaviorResource));
     }
 
     /**
@@ -86,6 +90,7 @@ public class DuelBot extends UT2004BotModuleController {
                 .add(UT2004ItemType.LINK_GUN, false)
                 .add(UT2004ItemType.MINIGUN, false);
 
+        InitializeBehaviourResources();
         AddBehaviors();
     }
 
@@ -136,9 +141,9 @@ public class DuelBot extends UT2004BotModuleController {
         // use Bot Name to visualize high-level state of your bot to ease debugging
         setDebugInfo("BRAIN-DEAD");
         // TODO test if current behavior ended
-        Behavior nextBeahvior = null;
+        IBehavior nextBeahvior = null;
         ConditionDto conditionEvaluation = EvaluateConditions();
-        for (Behavior behavior : behaviors) {
+        for (IBehavior behavior : behaviors) {
             if (behavior.IsUsable(conditionEvaluation)) {
                 if (nextBeahvior == null || behavior.GetPriority() > nextBeahvior.GetPriority()) {
                     nextBeahvior = behavior;
@@ -360,5 +365,7 @@ public class DuelBot extends UT2004BotModuleController {
     private ConditionDto EvaluateConditions() {
         return new ConditionDto(players.canSeeEnemies(), true);
     }
+
+
 
 }

@@ -21,26 +21,26 @@ package hlaa.duelbot;
  *
  * @author msi
  */
-public abstract class Behavior {
+public interface IBehavior {
     // TODO what about priority
-    protected ConditionDto RequiredConditions;
-    private double Priority;
+    /*protected ConditionDto RequiredConditions;
+    private double Priority;*/
     
-    public Behavior(double priority, ConditionDto requiredConditions)throws NullPointerException{
+    /*public IBehavior(double priority, ConditionDto requiredConditions)throws NullPointerException{
         this.Priority = priority;
         if (requiredConditions == null){
             throw new NullPointerException("Required conditions cannot be null");
         }
         this.RequiredConditions = requiredConditions;
-    }
+    }*/
+    public BotCapabilities[] GetBotCapabilities();
+    public IBehavior Stop();
+    public IBehavior Execute();
     
-    public abstract boolean Stop();
-    public abstract void Execute();
-    
-    public boolean IsUsable(ConditionDto conditionDto){
+    public boolean IsUsable(ConditionDto conditionDto);/*{
         return RequiredConditions.AreConditionsMet(conditionDto);
-    }  
-    public double GetPriority(){
+    }  */
+    public double GetPriority();/*{
         return this.Priority;
-    }
+    }*/
 }
