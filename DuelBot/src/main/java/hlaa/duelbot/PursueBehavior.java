@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package hlaa.duelbot;
 
 /**
  *
  * @author msi
  */
-public class PursueBehavior implements IBehavior{
+public class PursueBehavior implements IBehavior {
 
     private double priority;
     private BehaviorResource behaviorResource;
-    
-    PursueBehavior(double priority, BehaviorResource behaviorResource){
-    this.priority = priority;
-    this.behaviorResource = behaviorResource;
+
+    PursueBehavior(double priority, BehaviorResource behaviorResource) {
+        this.priority = priority;
+        this.behaviorResource = behaviorResource;
     }
+
     @Override
     public IBehavior Stop() {
         return null;
@@ -37,7 +37,7 @@ public class PursueBehavior implements IBehavior{
 
     @Override
     public IBehavior Execute() {
-        
+
         behaviorResource.navigation.navigate(behaviorResource.focusedEnemy);
         return this;
     }

@@ -47,13 +47,14 @@ public class DuelBot extends UT2004BotModuleController {
     private List<IBehavior> behaviors;
     private IBehavior currentBehavior = null;
     private BehaviorResource behaviorResource;
-    
+
     private void InitializeBehaviourResources() {
-        behaviorResource = new BehaviorResource(info,navigation);
+        behaviorResource = new BehaviorResource(info, navigation);
     }
+
     private void AddBehaviors() {
         behaviors = new LinkedList<>();
-        behaviors.add(new PursueBehavior(5,behaviorResource));
+        behaviors.add(new PursueBehavior(5, behaviorResource));
     }
 
     /**
@@ -147,7 +148,7 @@ public class DuelBot extends UT2004BotModuleController {
             if (behavior.IsUsable(conditionEvaluation)) {
                 if (nextBeahvior == null || behavior.GetPriority() > nextBeahvior.GetPriority()) {
                     nextBeahvior = behavior;
-                }  
+                }
             }
         }
 
@@ -365,7 +366,5 @@ public class DuelBot extends UT2004BotModuleController {
     private ConditionDto EvaluateConditions() {
         return new ConditionDto(players.canSeeEnemies(), true);
     }
-
-
 
 }

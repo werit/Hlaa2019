@@ -28,15 +28,16 @@ public class ConditionDto {
     }
     public boolean CanSeeEnemies;
     public boolean IsHealthBelow30;
-    
-    private boolean[] GetConditionsAsAnArray(){
-        return new boolean[]{CanSeeEnemies,IsHealthBelow30};
+
+    private boolean[] GetConditionsAsAnArray() {
+        return new boolean[]{CanSeeEnemies, IsHealthBelow30};
     }
-    public boolean AreConditionsMet(ConditionDto conditionsMet){
+
+    public boolean AreConditionsMet(ConditionDto conditionsMet) {
         boolean[] requiredConditionsArray = this.GetConditionsAsAnArray();
         boolean[] conditionsMetArray = conditionsMet.GetConditionsAsAnArray();
         for (int i = 0; i < requiredConditionsArray.length; i++) {
-            if (requiredConditionsArray[i]&&conditionsMetArray[i]!= requiredConditionsArray[i]) {
+            if (requiredConditionsArray[i] && conditionsMetArray[i] != requiredConditionsArray[i]) {
                 return false;
             }
         }

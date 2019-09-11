@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package hlaa.duelbot;
 
 /**
@@ -22,25 +21,14 @@ package hlaa.duelbot;
  * @author msi
  */
 public interface IBehavior {
-    // TODO what about priority
-    /*protected ConditionDto RequiredConditions;
-    private double Priority;*/
-    
-    /*public IBehavior(double priority, ConditionDto requiredConditions)throws NullPointerException{
-        this.Priority = priority;
-        if (requiredConditions == null){
-            throw new NullPointerException("Required conditions cannot be null");
-        }
-        this.RequiredConditions = requiredConditions;
-    }*/
+
     public BotCapabilities[] GetBotCapabilities();
+
     public IBehavior Stop();
+
     public IBehavior Execute();
-    
-    public boolean IsUsable(ConditionDto conditionDto);/*{
-        return RequiredConditions.AreConditionsMet(conditionDto);
-    }  */
-    public double GetPriority();/*{
-        return this.Priority;
-    }*/
+
+    public boolean IsUsable(ConditionDto conditionDto);
+
+    public double GetPriority();
 }
