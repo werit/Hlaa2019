@@ -39,6 +39,7 @@ public class PursueBehavior implements IBehavior {
 
     @Override
     public IBehavior Stop() {
+        behaviorResource.navigation.stopNavigation();
         return null;
     }
 
