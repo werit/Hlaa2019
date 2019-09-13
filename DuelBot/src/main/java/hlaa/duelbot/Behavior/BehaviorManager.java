@@ -17,6 +17,8 @@
 
 package hlaa.duelbot.Behavior;
 
+import hlaa.duelbot.Behavior.BehaviorLogic.FireAtEnemy;
+import hlaa.duelbot.Behavior.BehaviorLogic.FocusEnemy;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BehaviorLogic.PursueBehavior;
 import hlaa.duelbot.Behavior.BehaviorLogic.IBehavior;
@@ -40,6 +42,8 @@ public class BehaviorManager {
     private void AddBehaviors() {
         behaviors = new LinkedList<>();
         behaviors.add(new PursueBehavior(5, behaviorResource));
+        behaviors.add(new FireAtEnemy(4, behaviorResource));
+        behaviors.add(new FocusEnemy(3, behaviorResource));
     }
     public void DoLogic(){
         /*
@@ -68,6 +72,8 @@ public class BehaviorManager {
         /*if (behaviorResource.focusedEnemy == null) {
             return false;
         }*/
+        behaviorResource.focusedEnemy = behaviorResource.players.getNearestVisibleEnemy();
+        
         boolean isEnemyInFocus = behaviorResource.focusedEnemy != null;
         boolean isEnemyInFocusAtLocation = false;
         boolean isNotNavigating = false;
