@@ -14,24 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package hlaa.duelbot;
-
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
+package hlaa.duelbot.Behavior;
 
 /**
  *
  * @author msi
  */
-public class BehaviorResource {
+public enum BotCapabilities {
 
-    public Player focusedEnemy;
-    public final AgentInfo info;
-    public final IUT2004Navigation navigation;
-
-    BehaviorResource(AgentInfo info, IUT2004Navigation navigation) {
-        this.info = info;
-        this.navigation = navigation;
-    }
+    FOCUS,
+    FIRE,
+    MOVE
 }

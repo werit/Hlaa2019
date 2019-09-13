@@ -1,5 +1,7 @@
 package hlaa.duelbot;
 
+import hlaa.duelbot.Behavior.BehaviorManager;
+import hlaa.duelbot.Behavior.BehaviorResource;
 import java.util.logging.Level;
 
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;

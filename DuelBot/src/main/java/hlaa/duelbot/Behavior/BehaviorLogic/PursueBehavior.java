@@ -14,7 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package hlaa.duelbot;
+package hlaa.duelbot.Behavior.BehaviorLogic;
+
+import hlaa.duelbot.Behavior.BehaviorLogic.IBehavior;
+import hlaa.duelbot.Behavior.BehaviorResource;
+import hlaa.duelbot.Behavior.BotCapabilities;
+import hlaa.duelbot.Behavior.ConditionDto;
 
 /**
  *

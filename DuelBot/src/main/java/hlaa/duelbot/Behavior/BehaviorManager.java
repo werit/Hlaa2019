@@ -15,8 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package hlaa.duelbot;
+package hlaa.duelbot.Behavior;
 
+import hlaa.duelbot.Behavior.BehaviorResource;
+import hlaa.duelbot.Behavior.BehaviorLogic.PursueBehavior;
+import hlaa.duelbot.Behavior.BehaviorLogic.IBehavior;
 import java.util.LinkedList;
 import java.util.List;
 

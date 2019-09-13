@@ -14,21 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package hlaa.duelbot;
+package hlaa.duelbot.Behavior;
+
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 
 /**
  *
  * @author msi
  */
-public interface IBehavior {
+public class BehaviorResource {
 
-    public BotCapabilities[] GetBotCapabilities();
+    public Player focusedEnemy;
+    public final AgentInfo info;
+    public final IUT2004Navigation navigation;
 
-    public IBehavior Stop();
-
-    public IBehavior Execute();
-
-    public boolean IsUsable(ConditionDto conditionDto);
-
-    public double GetPriority();
+    public BehaviorResource(AgentInfo info, IUT2004Navigation navigation) {
+        this.info = info;
+        this.navigation = navigation;
+    }
 }
