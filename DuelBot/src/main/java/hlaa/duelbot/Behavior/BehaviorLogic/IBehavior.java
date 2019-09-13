@@ -31,7 +31,7 @@ public interface IBehavior {
 
     public IBehavior Execute();
 
-    public boolean IsUsable(ConditionDto conditionDto);
+    public boolean IsUsable(ConditionDto currentlyMetConditionDto);
 
     public double GetPriority();
 }
