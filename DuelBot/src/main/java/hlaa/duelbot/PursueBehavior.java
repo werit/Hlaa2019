@@ -24,10 +24,12 @@ public class PursueBehavior implements IBehavior {
 
     private double priority;
     private BehaviorResource behaviorResource;
+    private ConditionDto conditionDto;
 
-    PursueBehavior(double priority, BehaviorResource behaviorResource) {
+    public PursueBehavior(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
+        conditionDto = new ConditionDto(true, true, false);
     }
 
     @Override
@@ -48,19 +50,8 @@ public class PursueBehavior implements IBehavior {
     }
 
     @Override
-    public boolean IsUsable(ConditionDto conditionDto) {
-        if (behaviorResource.focusedEnemy == null) {
-            return false;
-        }
-        if (behaviorResource.info.atLocation(behaviorResource.focusedEnemy.getLocation())) {
-            behaviorResource.focusedEnemy = null;
-            return false;
-        }
-        if (!behaviorResource.navigation.isNavigating()) {
-            behaviorResource.focusedEnemy = null;
-            return false;
-        }
-        return true;
+    public boolean IsUsable(ConditionDto currentlyMetConditionDto) {
+        return conditionDto.AreConditionsMetAtCurrentRun(currentlyMetConditionDto);
     }
 
     @Override

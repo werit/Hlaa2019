@@ -22,20 +22,22 @@ package hlaa.duelbot;
  */
 public class ConditionDto {
 
-    public ConditionDto(boolean canSeeEnemies, boolean isHealthBelow30) {
-        CanSeeEnemies = canSeeEnemies;
-        IsHealthBelow30 = isHealthBelow30;
+        public ConditionDto(boolean isEnemyInFocus, boolean isEnemyInFocusAtLocation, boolean isNotNavigating) {
+        this.isEnemyInFocus = isEnemyInFocus;
+        this.isEnemyInFocusAtLocation = isEnemyInFocusAtLocation;
+        this.isNotNavigating = isNotNavigating;
     }
-    public boolean CanSeeEnemies;
-    public boolean IsHealthBelow30;
+    public boolean isEnemyInFocus;
+    public boolean isEnemyInFocusAtLocation;
+    public boolean isNotNavigating;
 
     private boolean[] GetConditionsAsAnArray() {
-        return new boolean[]{CanSeeEnemies, IsHealthBelow30};
+        return new boolean[]{isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating};
     }
 
-    public boolean AreConditionsMet(ConditionDto conditionsMet) {
+    public boolean AreConditionsMetAtCurrentRun(ConditionDto conditionsCurrentlyMet) {
         boolean[] requiredConditionsArray = this.GetConditionsAsAnArray();
-        boolean[] conditionsMetArray = conditionsMet.GetConditionsAsAnArray();
+        boolean[] conditionsMetArray = conditionsCurrentlyMet.GetConditionsAsAnArray();
         for (int i = 0; i < requiredConditionsArray.length; i++) {
             if (requiredConditionsArray[i] && conditionsMetArray[i] != requiredConditionsArray[i]) {
                 return false;

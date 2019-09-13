@@ -44,18 +44,12 @@ public class DuelBot extends UT2004BotModuleController {
     public Player focusedEnemy;
     private int counter = 0;
 
-    private List<IBehavior> behaviors;
-    private IBehavior currentBehavior = null;
-    private BehaviorResource behaviorResource;
+    
+    
+    
+    private BehaviorManager behaviorManager;
 
-    private void InitializeBehaviourResources() {
-        behaviorResource = new BehaviorResource(info, navigation);
-    }
-
-    private void AddBehaviors() {
-        behaviors = new LinkedList<>();
-        behaviors.add(new PursueBehavior(5, behaviorResource));
-    }
+    
 
     /**
      * Here we can modify initializing command for our bot, e.g., sets its name
@@ -91,9 +85,9 @@ public class DuelBot extends UT2004BotModuleController {
                 .add(UT2004ItemType.LINK_GUN, false)
                 .add(UT2004ItemType.MINIGUN, false);
 
-        InitializeBehaviourResources();
-        AddBehaviors();
-    }
+       
+        behaviorManager = new BehaviorManager(new BehaviorResource(info, navigation));
+            }
 
     @Override
     public void botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self) {
@@ -142,17 +136,9 @@ public class DuelBot extends UT2004BotModuleController {
         // use Bot Name to visualize high-level state of your bot to ease debugging
         setDebugInfo("BRAIN-DEAD");
         // TODO test if current behavior ended
-        IBehavior nextBeahvior = null;
-        ConditionDto conditionEvaluation = EvaluateConditions();
-        for (IBehavior behavior : behaviors) {
-            if (behavior.IsUsable(conditionEvaluation)) {
-                if (nextBeahvior == null || behavior.GetPriority() > nextBeahvior.GetPriority()) {
-                    nextBeahvior = behavior;
-                }
-            }
-        }
+        behaviorManager.DoLogic();
 
-        if (combatBeh()) {
+        /*if (combatBeh()) {
             return;
         }
         fireAtEnemy();
@@ -160,7 +146,7 @@ public class DuelBot extends UT2004BotModuleController {
             return;
         }
         focusEnemy();
-        collectItems();
+        collectItems();*/
     }
 
     private boolean combatBeh() {
@@ -363,8 +349,6 @@ public class DuelBot extends UT2004BotModuleController {
                 .startAgents(2);        // tells the runner to start 2 agent
     }
 
-    private ConditionDto EvaluateConditions() {
-        return new ConditionDto(players.canSeeEnemies(), true);
-    }
+    
 
 }
