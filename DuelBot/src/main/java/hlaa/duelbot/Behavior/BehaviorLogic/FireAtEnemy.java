@@ -33,7 +33,6 @@ public class FireAtEnemy implements IBehavior {
     public FireAtEnemy(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
-        // Todo
         conditionDto = new ConditionDto(true, true, false);
     }
 
@@ -50,7 +49,12 @@ public class FireAtEnemy implements IBehavior {
 
     @Override
     public IBehavior Execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        /*if (!players.canSeeEnemies()) {
+            shoot.stopShooting();
+            return false;
+        }*/
+        behaviorResource.shoot.shoot(behaviorResource.weaponPrefs, behaviorResource.focusedEnemy);
+        return this;
     }
 
     @Override
