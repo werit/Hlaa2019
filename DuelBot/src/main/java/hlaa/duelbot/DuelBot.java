@@ -46,12 +46,7 @@ public class DuelBot extends UT2004BotModuleController {
     public Player focusedEnemy;
     private int counter = 0;
 
-    
-    
-    
     private BehaviorManager behaviorManager;
-
-    
 
     /**
      * Here we can modify initializing command for our bot, e.g., sets its name
@@ -87,9 +82,8 @@ public class DuelBot extends UT2004BotModuleController {
                 .add(UT2004ItemType.LINK_GUN, false)
                 .add(UT2004ItemType.MINIGUN, false);
 
-       
-        behaviorManager = new BehaviorManager(new BehaviorResource(info, navigation,shoot,weaponPrefs));
-            }
+        behaviorManager = new BehaviorManager(new BehaviorResource(info, navigation, shoot, weaponPrefs, players));
+    }
 
     @Override
     public void botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self) {
@@ -141,14 +135,14 @@ public class DuelBot extends UT2004BotModuleController {
         behaviorManager.DoLogic();
 
         /*if (combatBeh()) {
-            return;
-        }
-        fireAtEnemy();
-        if (pursueEnemy()) {
-            return;
-        }
-        focusEnemy();
-        collectItems();*/
+         return;
+         }
+         fireAtEnemy();
+         if (pursueEnemy()) {
+         return;
+         }
+         focusEnemy();
+         collectItems();*/
     }
 
     private boolean combatBeh() {
@@ -350,7 +344,5 @@ public class DuelBot extends UT2004BotModuleController {
         ).setMain(true) // tells runner that is is executed inside MAIN method, thus it may block the thread and watch whether agent/s are correctly executed
                 .startAgents(2);        // tells the runner to start 2 agent
     }
-
-    
 
 }

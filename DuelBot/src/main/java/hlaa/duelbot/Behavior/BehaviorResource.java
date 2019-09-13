@@ -17,6 +17,7 @@
 package hlaa.duelbot.Behavior;
 
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.WeaponPrefs;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.bot.command.ImprovedShooting;
@@ -29,15 +30,18 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 public class BehaviorResource {
 
     public Player focusedEnemy;
+
     public final AgentInfo info;
     public final IUT2004Navigation navigation;
     public final ImprovedShooting shoot;
     public final WeaponPrefs weaponPrefs;
+    public final Players players;
 
-    public BehaviorResource(AgentInfo info, IUT2004Navigation navigation, ImprovedShooting shoot, WeaponPrefs weaponPrefs) {
+    public BehaviorResource(AgentInfo info, IUT2004Navigation navigation, ImprovedShooting shoot, WeaponPrefs weaponPrefs, Players players) {
         this.info = info;
         this.navigation = navigation;
         this.shoot = shoot;
         this.weaponPrefs = weaponPrefs;
+        this.players = players;
     }
 }
