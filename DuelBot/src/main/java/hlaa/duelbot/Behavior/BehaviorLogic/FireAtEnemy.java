@@ -33,7 +33,7 @@ public class FireAtEnemy implements IBehavior {
     public FireAtEnemy(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
-        conditionDto = new ConditionDto(true, true, false);
+        conditionDto = new ConditionDto(true, false, false);
     }
 
     @Override

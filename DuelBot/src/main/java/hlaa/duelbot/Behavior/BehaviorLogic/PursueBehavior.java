@@ -16,7 +16,6 @@
  */
 package hlaa.duelbot.Behavior.BehaviorLogic;
 
-import hlaa.duelbot.Behavior.BehaviorLogic.IBehavior;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BotCapabilities;
 import hlaa.duelbot.Behavior.ConditionDto;
@@ -34,7 +33,7 @@ public class PursueBehavior implements IBehavior {
     public PursueBehavior(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
-        conditionDto = new ConditionDto(true, true, false);
+        conditionDto = new ConditionDto(true, false, false);
     }
 
     @Override
