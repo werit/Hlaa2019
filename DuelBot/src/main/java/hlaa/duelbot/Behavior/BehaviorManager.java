@@ -34,12 +34,15 @@ import net.sf.saxon.instruct.ForEach;
 public class BehaviorManager {
 
     private List<IBehavior> behaviors;
+    private List<IBehavior> previousBehaviors;
+    private List<IBehavior> currentBehaviors;
     private BehaviorResource behaviorResource;
-    private IBehavior currentBehavior = null;
 
     public BehaviorManager(BehaviorResource behaviorResource) {
         this.behaviorResource = behaviorResource;
         AddBehaviors();
+        previousBehaviors = new ArrayList<>();
+        currentBehaviors = new ArrayList<>();
     }
 
     private void AddBehaviors() {
@@ -62,10 +65,13 @@ public class BehaviorManager {
          collectItems();
          */
 
-        
         ConditionDto conditionEvaluation = EvaluateConditions();
         List<BotCapabilities> botCapabilities = GetAllBotcapabilities();
+        //TODODODODO
 //todo get all currently executed behaviors and stop the ones that should not execute
+        previousBehaviors = currentBehaviors;
+        currentBehaviors = new ArrayList<>();
+
         while (botCapabilities.size() > 0) {
             IBehavior nextBeahvior = null;
             for (IBehavior behavior : GetBehaviorsRequiringCapabilities(behaviors, botCapabilities)) {
@@ -78,14 +84,33 @@ public class BehaviorManager {
             if (nextBeahvior != null) {
                 for (BotCapabilities GetBotCapability : nextBeahvior.GetBotCapabilities()) {
                     botCapabilities.remove(GetBotCapability);
-                }                
-                nextBeahvior.Execute();
-            }
-            else{
+                }
+                currentBehaviors.add(nextBeahvior);                
+            } else {
                 break;
             }
         }
+        StopNotUsedBehaviors(previousBehaviors, currentBehaviors);
 
+        for (IBehavior executionBehav : currentBehaviors) {
+            executionBehav.Execute();
+        }
+
+    }
+
+    private void StopNotUsedBehaviors(List<IBehavior> previousBehaviors, List<IBehavior> currentBehaviors) {
+        for (IBehavior previousBehav : previousBehaviors) {
+            boolean isContained = false;
+            for (IBehavior currentBehav : currentBehaviors) {
+                if (previousBehav == currentBehav) {
+                    isContained = true;
+                    break;
+                }
+            }
+            if (!isContained) {
+                previousBehav.Stop();
+            }
+        }
     }
 
     private List<BotCapabilities> GetAllBotcapabilities() {
@@ -125,10 +150,10 @@ public class BehaviorManager {
 
     private List<IBehavior> GetBehaviorsRequiringCapabilities(List<IBehavior> behaviors, List<BotCapabilities> freeBotCapabilities) {
         List<IBehavior> admissibleBehaviors = new ArrayList<>();
-        
+
         for (IBehavior behavior : behaviors) {
             BotCapabilities[] getBotBehaviorActions = behavior.GetBotCapabilities();
-            
+
             if (IsBehaviorUsable(getBotBehaviorActions, freeBotCapabilities)) {
                 admissibleBehaviors.add(behavior);
             }
@@ -148,8 +173,7 @@ public class BehaviorManager {
             }
             if (isCapabilityPresent) {
                 isBehaviorUsable = true;
-            }
-            else{
+            } else {
                 isBehaviorUsable = false;
                 break;
             }
