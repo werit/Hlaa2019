@@ -67,4 +67,9 @@ public class FireAtEnemy implements IBehavior {
         return this.priority;
     }
 
+    @Override
+    public String GetBehaviorName() {
+        return this.getClass().toString();
+    }
+
 }

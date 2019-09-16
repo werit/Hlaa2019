@@ -21,10 +21,12 @@ import hlaa.duelbot.Behavior.BehaviorLogic.FocusEnemy;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BehaviorLogic.PursueBehavior;
 import hlaa.duelbot.Behavior.BehaviorLogic.IBehavior;
+import hlaa.duelbot.Behavior.BehaviorLogic.ItemPickBehavior;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import net.sf.saxon.instruct.ForEach;
 
 /**
@@ -85,7 +87,7 @@ public class BehaviorManager {
                 for (BotCapabilities GetBotCapability : nextBeahvior.GetBotCapabilities()) {
                     botCapabilities.remove(GetBotCapability);
                 }
-                currentBehaviors.add(nextBeahvior);                
+                currentBehaviors.add(nextBeahvior);
             } else {
                 break;
             }
@@ -93,6 +95,7 @@ public class BehaviorManager {
         StopNotUsedBehaviors(previousBehaviors, currentBehaviors);
 
         for (IBehavior executionBehav : currentBehaviors) {
+            behaviorResource.log.log(Level.INFO, "Starting execution of {0}", executionBehav.GetBehaviorName());
             executionBehav.Execute();
         }
 
@@ -108,6 +111,7 @@ public class BehaviorManager {
                 }
             }
             if (!isContained) {
+                behaviorResource.log.log(Level.INFO, "Stopping execution of {0}", previousBehav.GetBehaviorName());
                 previousBehav.Stop();
             }
         }

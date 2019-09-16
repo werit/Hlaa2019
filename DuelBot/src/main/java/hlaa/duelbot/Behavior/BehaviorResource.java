@@ -16,10 +16,14 @@
  */
 package hlaa.duelbot.Behavior;
 
+import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Items;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavPoints;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.WeaponPrefs;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
 import cz.cuni.amis.pogamut.ut2004.bot.command.ImprovedShooting;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 
@@ -30,18 +34,31 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 public class BehaviorResource {
 
     public Player focusedEnemy;
-
+    
+    public final LogCategory log;
     public final AgentInfo info;
-    public final IUT2004Navigation navigation;
+    public final IUT2004Navigation navigation;    
+    public final NavPoints navPoints;
+    public final NavMeshModule navMeshModule;
     public final ImprovedShooting shoot;
     public final WeaponPrefs weaponPrefs;
     public final Players players;
+    public final Items items;
 
-    public BehaviorResource(AgentInfo info, IUT2004Navigation navigation, ImprovedShooting shoot, WeaponPrefs weaponPrefs, Players players) {
+    public BehaviorResource(LogCategory log,
+            AgentInfo info, IUT2004Navigation navigation, 
+            NavPoints navPoints, NavMeshModule navMeshModule, 
+            ImprovedShooting shoot, WeaponPrefs weaponPrefs, 
+            Players players, Items items) {
+        this.log = log;
         this.info = info;
         this.navigation = navigation;
+        this.navPoints = navPoints;
+        this.navMeshModule = navMeshModule;
         this.shoot = shoot;
         this.weaponPrefs = weaponPrefs;
         this.players = players;
+        this.items = items;
+        
     }
 }

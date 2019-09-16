@@ -63,4 +63,9 @@ public class FocusEnemy implements IBehavior {
         return this.priority;
     }
 
+    @Override
+    public String GetBehaviorName() {
+        return this.getClass().toString();
+    }
+
 }

@@ -82,7 +82,7 @@ public class DuelBot extends UT2004BotModuleController {
                 .add(UT2004ItemType.LINK_GUN, false)
                 .add(UT2004ItemType.MINIGUN, false);
 
-        behaviorManager = new BehaviorManager(new BehaviorResource(info, navigation, shoot, weaponPrefs, players));
+        behaviorManager = new BehaviorManager(new BehaviorResource(log, info, navigation, navPoints, navMeshModule, shoot, weaponPrefs, players, items));
     }
 
     @Override

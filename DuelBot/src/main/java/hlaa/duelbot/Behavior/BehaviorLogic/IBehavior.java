@@ -34,4 +34,6 @@ public interface IBehavior {
     public boolean IsUsable(ConditionDto currentlyMetConditionDto);
 
     public double GetPriority();
+
+    public String GetBehaviorName();
 }

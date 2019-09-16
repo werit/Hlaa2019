@@ -63,4 +63,9 @@ public class PursueBehavior implements IBehavior {
     public double GetPriority() {
         return this.priority;
     }
+
+    @Override
+    public String GetBehaviorName() {
+        return this.getClass().toString();
+    }
 }
