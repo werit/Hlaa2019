@@ -79,7 +79,7 @@ public class BehaviorManager {
             IBehavior nextBeahvior = null;
             for (IBehavior behavior : GetBehaviorsRequiringCapabilities(behaviors, botCapabilities)) {
                 if (behavior.IsUsable(conditionEvaluation)) {
-                    if (nextBeahvior == null || behavior.GetPriority() > nextBeahvior.GetPriority()) {
+                    if (nextBeahvior == null || behavior.GetPriority() < nextBeahvior.GetPriority()) {
                         nextBeahvior = behavior;
                     }
                 }
