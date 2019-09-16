@@ -52,6 +52,7 @@ public class BehaviorManager {
         behaviors.add(new PursueBehavior(5, behaviorResource));
         behaviors.add(new FireAtEnemy(4, behaviorResource));
         behaviors.add(new FocusEnemy(3, behaviorResource));
+        behaviors.add(new ItemPickBehavior(6, behaviorResource));
     }
 
     public void DoLogic() {
