@@ -59,7 +59,7 @@ public class ItemPickBehavior implements IBehavior {
 
     @Override
     public IBehavior Execute() {
-        
+
         Item item = DistanceUtils.getNearest(
                 MyCollections.getFiltered(
                         behaviorResource.items.getSpawnedItems().values(),
@@ -96,6 +96,11 @@ public class ItemPickBehavior implements IBehavior {
                         }
                         if (object.getType() == UT2004ItemType.SUPER_HEALTH_PACK) {
                             multi = 0.4;
+                        }
+                        if (object.getType() == UT2004ItemType.HEALTH_PACK) {
+                            if (behaviorResource.info.getHealth() < 30) {
+                                multi = 0.45;
+                            }
                         }
                         if (object.getType().getCategory() == ItemType.Category.AMMO) {
                             multi = Double.POSITIVE_INFINITY;
