@@ -17,10 +17,12 @@
 package hlaa.duelbot.Behavior;
 
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weaponry;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Items;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavPoints;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Senses;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.WeaponPrefs;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
@@ -42,14 +44,17 @@ public class BehaviorResource {
     public final NavMeshModule navMeshModule;
     public final ImprovedShooting shoot;
     public final WeaponPrefs weaponPrefs;
+    public final Weaponry weaponry;
     public final Players players;
+    public final Senses senses;
     public final Items items;
 
     public BehaviorResource(LogCategory log,
             AgentInfo info, IUT2004Navigation navigation, 
             NavPoints navPoints, NavMeshModule navMeshModule, 
             ImprovedShooting shoot, WeaponPrefs weaponPrefs, 
-            Players players, Items items) {
+            Weaponry weaponry, Players players, 
+            Senses senses, Items items) {
         this.log = log;
         this.info = info;
         this.navigation = navigation;
@@ -57,7 +62,9 @@ public class BehaviorResource {
         this.navMeshModule = navMeshModule;
         this.shoot = shoot;
         this.weaponPrefs = weaponPrefs;
+        this.weaponry = weaponry;
         this.players = players;
+        this.senses = senses;
         this.items = items;
         
     }
