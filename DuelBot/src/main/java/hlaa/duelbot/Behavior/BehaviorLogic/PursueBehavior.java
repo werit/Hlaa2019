@@ -33,7 +33,7 @@ public class PursueBehavior implements IBehavior {
     public PursueBehavior(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
-        conditionDto = new ConditionDto(true, false, false);
+        conditionDto = new ConditionDto(true, false, false, false);
     }
 
     @Override

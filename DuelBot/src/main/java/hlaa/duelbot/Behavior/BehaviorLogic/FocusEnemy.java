@@ -29,13 +29,13 @@ public class FocusEnemy implements IBehavior {
     private double priority;
     private BehaviorResource behaviorResource;
     private ConditionDto conditionDto;
-    
-    public FocusEnemy(double priority, BehaviorResource behaviorResource){
+
+    public FocusEnemy(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
-        conditionDto = new ConditionDto(true, false, false);
+        conditionDto = new ConditionDto(true, false, false, false);
     }
-    
+
     @Override
     public BotCapabilities[] GetBotCapabilities() {
         return new BotCapabilities[]{BotCapabilities.FOCUS};

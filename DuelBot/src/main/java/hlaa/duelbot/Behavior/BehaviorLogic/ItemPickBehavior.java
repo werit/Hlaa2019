@@ -40,7 +40,7 @@ public class ItemPickBehavior implements IBehavior {
     public ItemPickBehavior(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
-        conditionDto = new ConditionDto(false, false, false);
+        conditionDto = new ConditionDto(false, false, false, false);
     }
 
     @Override

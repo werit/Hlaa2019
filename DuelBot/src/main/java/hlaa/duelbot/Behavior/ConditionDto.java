@@ -22,17 +22,19 @@ package hlaa.duelbot.Behavior;
  */
 public class ConditionDto {
 
-    public ConditionDto(boolean isEnemyInFocus, boolean isEnemyInFocusAtLocation, boolean isNotNavigating) {
+    public ConditionDto(boolean isEnemyInFocus, boolean isEnemyInFocusAtLocation, boolean isNotNavigating, boolean isHealthBelow30) {
         this.isEnemyInFocus = isEnemyInFocus;
         this.isEnemyInFocusAtLocation = isEnemyInFocusAtLocation;
         this.isNotNavigating = isNotNavigating;
+        this.isHealthBelow30 = isHealthBelow30;
     }
     public boolean isEnemyInFocus;
     public boolean isEnemyInFocusAtLocation;
     public boolean isNotNavigating;
+    public boolean isHealthBelow30;
     
     private boolean[] GetConditionsAsAnArray() {
-        return new boolean[]{isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating};
+        return new boolean[]{isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating,isHealthBelow30};
     }
 
     public boolean AreConditionsMetAtCurrentRun(ConditionDto conditionsCurrentlyMet) {

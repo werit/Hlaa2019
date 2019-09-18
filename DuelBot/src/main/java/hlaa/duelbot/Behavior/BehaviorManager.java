@@ -145,12 +145,13 @@ public class BehaviorManager {
          return false;
          }*/
         isNotNavigating = !behaviorResource.navigation.isNavigating();
+        boolean isHealthBelow30 = behaviorResource.info.getHealth() < 30;
         //if(isNotNavigating)behaviorResource.focusedEnemy = null;
         /*if (!behaviorResource.navigation.isNavigating()) {
          behaviorResource.focusedEnemy = null;
          return false;
          }*/
-        return new ConditionDto(isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating);
+        return new ConditionDto(isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating, isHealthBelow30);
     }
 
     private List<IBehavior> GetBehaviorsRequiringCapabilities(List<IBehavior> behaviors, List<BotCapabilities> freeBotCapabilities) {
