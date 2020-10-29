@@ -25,13 +25,13 @@ import hlaa.duelbot.Behavior.ConditionDto;
  *
  * @author msi
  */
-public class CoverBehavior implements IBehavior {
+public class CoverShootingBehavior implements IBehavior {
 
     private double priority;
     private BehaviorResource behaviorResource;
     private ConditionDto conditionDto;
 
-    public CoverBehavior(double priority, BehaviorResource behaviorResource) {
+    public CoverShootingBehavior(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
         conditionDto = new ConditionDto(false, false, false, true);
@@ -39,7 +39,7 @@ public class CoverBehavior implements IBehavior {
 
     @Override
     public BotCapabilities[] GetBotCapabilities() {
-        return new BotCapabilities[]{BotCapabilities.FIRE, BotCapabilities.MOVE};
+        return new BotCapabilities[]{BotCapabilities.FIRE};
     }
 
     @Override

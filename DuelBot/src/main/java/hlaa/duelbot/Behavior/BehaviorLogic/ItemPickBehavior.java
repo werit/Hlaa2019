@@ -86,21 +86,20 @@ public class ItemPickBehavior implements IBehavior {
                             multi = 0.6;
                         }
                         if (object.getType() == UT2004ItemType.SUPER_SHIELD_PACK) {
-                            multi = 0.6;
+                            multi = 0.6 * GetLoweringHealthMultiplier();
                         }
                         if (object.getType() == UT2004ItemType.U_DAMAGE_PACK) {
                             multi = 0.3;
                         }
                         if (object.getType() == UT2004ItemType.SHIELD_PACK) {
-                            multi = 0.7;
+                            multi = 0.7 * GetLoweringHealthMultiplier();
                         }
                         if (object.getType() == UT2004ItemType.SUPER_HEALTH_PACK) {
-                            multi = 0.4;
+                            multi = 0.4 * GetLoweringHealthMultiplier();
                         }
                         if (object.getType() == UT2004ItemType.HEALTH_PACK) {
-                            if (behaviorResource.info.getHealth() < 30) {
-                                multi = 0.45;
-                            }
+                            multi = 0.45 * GetLoweringHealthMultiplier();
+
                         }
                         if (object.getType().getCategory() == ItemType.Category.AMMO) {
                             multi = Double.POSITIVE_INFINITY;
@@ -132,6 +131,10 @@ public class ItemPickBehavior implements IBehavior {
     @Override
     public String GetBehaviorName() {
         return this.getClass().toString();
+    }
+
+    private double GetLoweringHealthMultiplier() {
+        return (behaviorResource.info.getHealth() / 100.0);
     }
 
 }

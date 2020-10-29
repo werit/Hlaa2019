@@ -24,6 +24,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavPoints;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Senses;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.WeaponPrefs;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.visibility.Visibility;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
 import cz.cuni.amis.pogamut.ut2004.bot.command.ImprovedShooting;
@@ -48,13 +49,14 @@ public class BehaviorResource {
     public final Players players;
     public final Senses senses;
     public final Items items;
+    public final Visibility visibility;
 
     public BehaviorResource(LogCategory log,
             AgentInfo info, IUT2004Navigation navigation, 
             NavPoints navPoints, NavMeshModule navMeshModule, 
             ImprovedShooting shoot, WeaponPrefs weaponPrefs, 
             Weaponry weaponry, Players players, 
-            Senses senses, Items items) {
+            Senses senses, Items items, Visibility visibility) {
         this.log = log;
         this.info = info;
         this.navigation = navigation;
@@ -66,6 +68,6 @@ public class BehaviorResource {
         this.players = players;
         this.senses = senses;
         this.items = items;
-        
+        this.visibility = visibility;
     }
 }

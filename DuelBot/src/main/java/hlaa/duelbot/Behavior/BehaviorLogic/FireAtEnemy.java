@@ -16,9 +16,15 @@
  */
 package hlaa.duelbot.Behavior.BehaviorLogic;
 
+import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BotCapabilities;
 import hlaa.duelbot.Behavior.ConditionDto;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -49,12 +55,22 @@ public class FireAtEnemy implements IBehavior {
 
     @Override
     public IBehavior Execute() {
-        /*if (!players.canSeeEnemies()) {
-         shoot.stopShooting();
-         return false;
-         }*/
-        behaviorResource.shoot.shoot(behaviorResource.weaponPrefs, behaviorResource.focusedEnemy);
+        if (IsUsableRocketLuncher()) {
+            //shooting under the feet
+            behaviorResource.shoot.shoot(behaviorResource.weaponry.getWeapon(UT2004ItemType.ROCKET_LAUNCHER), true, behaviorResource.focusedEnemy.getLocation().addZ(-100));
+        } else {
+            behaviorResource.shoot.shoot(behaviorResource.weaponPrefs, behaviorResource.focusedEnemy);
+        }
+
         return this;
+    }
+
+    private boolean IsUsableRocketLuncher() {
+        double distToTarget = Math.abs(behaviorResource.focusedEnemy.getLocation().getDistance(behaviorResource.info.getLocation()));
+        return behaviorResource.weaponry.hasWeapon(UT2004ItemType.ROCKET_LAUNCHER)
+                && behaviorResource.weaponry.hasAmmo(UT2004ItemType.ROCKET_LAUNCHER)
+                && distToTarget > 100 
+                && distToTarget < 400;
     }
 
     @Override

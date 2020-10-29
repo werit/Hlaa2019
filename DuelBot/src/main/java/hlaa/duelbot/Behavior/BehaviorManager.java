@@ -16,6 +16,8 @@
  */
 package hlaa.duelbot.Behavior;
 
+import hlaa.duelbot.Behavior.BehaviorLogic.CoverMoveBehavior;
+import hlaa.duelbot.Behavior.BehaviorLogic.CoverShootingBehavior;
 import hlaa.duelbot.Behavior.BehaviorLogic.FireAtEnemy;
 import hlaa.duelbot.Behavior.BehaviorLogic.FocusEnemy;
 import hlaa.duelbot.Behavior.BehaviorResource;
@@ -53,6 +55,7 @@ public class BehaviorManager {
         behaviors.add(new FireAtEnemy(4, behaviorResource));
         behaviors.add(new FocusEnemy(3, behaviorResource));
         behaviors.add(new ItemPickBehavior(6, behaviorResource));
+        behaviors.add(new CoverMoveBehavior(4.5, behaviorResource));
     }
 
     public void DoLogic() {
@@ -145,13 +148,13 @@ public class BehaviorManager {
          return false;
          }*/
         isNotNavigating = !behaviorResource.navigation.isNavigating();
-        boolean isHealthBelow30 = behaviorResource.info.getHealth() < 30;
+        boolean isHealthBelow70 = behaviorResource.info.getHealth() < 70;
         //if(isNotNavigating)behaviorResource.focusedEnemy = null;
         /*if (!behaviorResource.navigation.isNavigating()) {
          behaviorResource.focusedEnemy = null;
          return false;
          }*/
-        return new ConditionDto(isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating, isHealthBelow30);
+        return new ConditionDto(isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating, isHealthBelow70);
     }
 
     private List<IBehavior> GetBehaviorsRequiringCapabilities(List<IBehavior> behaviors, List<BotCapabilities> freeBotCapabilities) {

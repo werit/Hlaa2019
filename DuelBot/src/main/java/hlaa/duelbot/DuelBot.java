@@ -88,7 +88,7 @@ public class DuelBot extends UT2004BotModuleController {
                         navMeshModule, shoot,
                         weaponPrefs, weaponry,
                         players, senses,
-                        items));
+                        items,visibility));
     }
 
     @Override
