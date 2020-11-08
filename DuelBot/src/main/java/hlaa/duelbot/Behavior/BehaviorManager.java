@@ -58,6 +58,9 @@ public class BehaviorManager {
         behaviors.add(new CoverMoveBehavior(4.5, behaviorResource));
     }
 
+    public BehaviorResource GetResources(){
+        return behaviorResource;
+    }
     public void DoLogic() {
         /*
          if (combatBeh()) {

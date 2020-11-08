@@ -16,15 +16,10 @@
  */
 package hlaa.duelbot.Behavior.BehaviorLogic;
 
-import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
-import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BotCapabilities;
 import hlaa.duelbot.Behavior.ConditionDto;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *

@@ -25,10 +25,14 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Senses;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.WeaponPrefs;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.visibility.Visibility;
+import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
+import cz.cuni.amis.pogamut.ut2004.bot.command.AdvancedLocomotion;
 import cz.cuni.amis.pogamut.ut2004.bot.command.ImprovedShooting;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
+import cz.cuni.amis.pogamut.ut2004.teamcomm.bot.UT2004TCClient;
 
 /**
  *
@@ -37,10 +41,10 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 public class BehaviorResource {
 
     public Player focusedEnemy;
-    
+
     public final LogCategory log;
     public final AgentInfo info;
-    public final IUT2004Navigation navigation;    
+    public final IUT2004Navigation navigation;
     public final NavPoints navPoints;
     public final NavMeshModule navMeshModule;
     public final ImprovedShooting shoot;
@@ -50,13 +54,18 @@ public class BehaviorResource {
     public final Senses senses;
     public final Items items;
     public final Visibility visibility;
+    public final UT2004TCClient tcClient;
+    public final AdvancedLocomotion move;
+    public final TabooSet<Item> tabooItems;
 
     public BehaviorResource(LogCategory log,
-            AgentInfo info, IUT2004Navigation navigation, 
-            NavPoints navPoints, NavMeshModule navMeshModule, 
-            ImprovedShooting shoot, WeaponPrefs weaponPrefs, 
-            Weaponry weaponry, Players players, 
-            Senses senses, Items items, Visibility visibility) {
+            AgentInfo info, IUT2004Navigation navigation,
+            NavPoints navPoints, NavMeshModule navMeshModule,
+            ImprovedShooting shoot, WeaponPrefs weaponPrefs,
+            Weaponry weaponry, Players players,
+            Senses senses, Items items, Visibility visibility,
+            UT2004TCClient tcClient, AdvancedLocomotion move,
+            TabooSet<Item> tabooItems) {
         this.log = log;
         this.info = info;
         this.navigation = navigation;
@@ -69,5 +78,8 @@ public class BehaviorResource {
         this.senses = senses;
         this.items = items;
         this.visibility = visibility;
+        this.tcClient = tcClient;
+        this.move = move;
+        this.tabooItems = tabooItems;
     }
 }

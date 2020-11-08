@@ -26,6 +26,8 @@ import cz.cuni.amis.utils.collections.MyCollections;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BotCapabilities;
 import hlaa.duelbot.Behavior.ConditionDto;
+import tdm.tc.msgs.TCStartToNavigateToItem;
+import tdm.tc.msgs.TcStopNavigatingToItem;
 
 /**
  *
@@ -36,6 +38,7 @@ public class ItemPickBehavior implements IBehavior {
     private double priority;
     private BehaviorResource behaviorResource;
     private ConditionDto conditionDto;
+    private Item lastItemNavigatedTo = null;
 
     public ItemPickBehavior(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
@@ -50,6 +53,8 @@ public class ItemPickBehavior implements IBehavior {
 
     @Override
     public IBehavior Stop() {
+        SendMessageOfStoppingToNavigateToCertainItem();
+        lastItemNavigatedTo = null;
         if (behaviorResource.navigation.isNavigating()) {
             behaviorResource.navigation.stopNavigation();
         }
@@ -60,9 +65,42 @@ public class ItemPickBehavior implements IBehavior {
     @Override
     public IBehavior Execute() {
 
-        Item item = DistanceUtils.getNearest(
+        // Get item where I would like to navigate now
+        Item item = GetNearestAllowedItem();
+
+        if (item == null) {
+            if (!behaviorResource.navigation.isNavigating()) {
+                behaviorResource.navigation.navigate(behaviorResource.navPoints.getRandomNavPoint());
+            }
+        } else {
+            if (item.equals(lastItemNavigatedTo)) {
+                if (!behaviorResource.navigation.isNavigating()) {
+                    if (item.isVisible() || behaviorResource.info.getDistance(item) < 150 && item.getLocation().sub(behaviorResource.info.getLocation()).z < 50) {
+                        behaviorResource.move.moveTo(
+                                item.getLocation()
+                                .add(item.getLocation().sub(behaviorResource.info.getLocation()).getNormalized().scale(150)));
+                        return this;
+                    }
+                }
+            } else {
+
+                SendMessageOfStoppingToNavigateToCertainItem();
+                behaviorResource.tcClient.sendToTeamOthers(
+                        new TCStartToNavigateToItem(behaviorResource.info.getId(), item.getId()));
+                // forbid me from navigating to this item
+                behaviorResource.tabooItems.add(item);
+                behaviorResource.navigation.navigate(item);
+                lastItemNavigatedTo = item;
+            }
+
+        }
+        return this;
+    }
+
+    private Item GetNearestAllowedItem() {
+        return DistanceUtils.getNearest(
                 MyCollections.getFiltered(
-                        behaviorResource.items.getSpawnedItems().values(),
+                        behaviorResource.items.getAllItems().values(),
                         new IFilter<Item>() {
                             @Override
                             public boolean isAccepted(Item object) {
@@ -70,7 +108,10 @@ public class ItemPickBehavior implements IBehavior {
                                 //items.isPickupSpawned(item)
                                 //items.willPickupBeSpawnedIn(item, seconds)
                                 //UnrealUtils.CHARACTER_RUN_SPEED // UT_units/sec
-                                return behaviorResource.items.isPickable(object);
+                                return behaviorResource.items.isPickable(object)
+                                && !behaviorResource.tabooItems.isTaboo(object)
+                                && (behaviorResource.items.isPickupSpawned(object) // did not know what speed can I expect...than I could use distance from distance utils 
+                                /*|| behaviorResource.items.willPickupBeSpawnedIn(object, 3.0)*/);
                             }
                         }),
                 behaviorResource.info.getLocation(),
@@ -108,14 +149,6 @@ public class ItemPickBehavior implements IBehavior {
                     }
 
                 });
-        if (item == null) {
-            if (!behaviorResource.navigation.isNavigating()) {
-                behaviorResource.navigation.navigate(behaviorResource.navPoints.getRandomNavPoint());
-            }
-        } else {
-            behaviorResource.navigation.navigate(item);
-        }
-        return this;
     }
 
     @Override
@@ -135,6 +168,15 @@ public class ItemPickBehavior implements IBehavior {
 
     private double GetLoweringHealthMultiplier() {
         return (behaviorResource.info.getHealth() / 100.0);
+    }
+
+    private void SendMessageOfStoppingToNavigateToCertainItem() {
+        if (lastItemNavigatedTo != null) {
+            // we are navigating to different item from lastItem
+            behaviorResource.tabooItems.remove(lastItemNavigatedTo);
+            behaviorResource.tcClient.sendToTeamOthers(
+                    new TcStopNavigatingToItem(behaviorResource.info.getId(), lastItemNavigatedTo.getId()));
+        }
     }
 
 }
