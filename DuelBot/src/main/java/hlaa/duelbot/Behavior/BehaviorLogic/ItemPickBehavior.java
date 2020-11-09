@@ -26,6 +26,8 @@ import cz.cuni.amis.utils.collections.MyCollections;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BotCapabilities;
 import hlaa.duelbot.Behavior.ConditionDto;
+import java.util.ArrayList;
+import java.util.List;
 import tdm.tc.msgs.TCStartToNavigateToItem;
 import tdm.tc.msgs.TcStopNavigatingToItem;
 
@@ -39,11 +41,13 @@ public class ItemPickBehavior implements IBehavior {
     private BehaviorResource behaviorResource;
     private ConditionDto conditionDto;
     private Item lastItemNavigatedTo = null;
+    private List<ItemType.Category> importantCategories;
 
     public ItemPickBehavior(double priority, BehaviorResource behaviorResource) {
         this.priority = priority;
         this.behaviorResource = behaviorResource;
         conditionDto = new ConditionDto(false, false, false, false);
+        InitializeImportantCategories();
     }
 
     @Override
@@ -74,23 +78,33 @@ public class ItemPickBehavior implements IBehavior {
             }
         } else {
             if (item.equals(lastItemNavigatedTo)) {
-                if (!behaviorResource.navigation.isNavigating()) {
-                    if (item.isVisible() || behaviorResource.info.getDistance(item) < 150 && item.getLocation().sub(behaviorResource.info.getLocation()).z < 50) {
-                        behaviorResource.move.moveTo(
-                                item.getLocation()
-                                .add(item.getLocation().sub(behaviorResource.info.getLocation()).getNormalized().scale(150)));
-                        return this;
-                    }
-                }
-            } else {
+                // This is a fix for item on rocks when the navigation mesh is not the "best"
+                // If navigation mesh is functioning as it should this will hinder the bot movement on stairs and similar spaces.
+                // Therefore it is commented out..
 
-                SendMessageOfStoppingToNavigateToCertainItem();
-                behaviorResource.tcClient.sendToTeamOthers(
-                        new TCStartToNavigateToItem(behaviorResource.info.getId(), item.getId()));
-                // forbid me from navigating to this item
-                behaviorResource.tabooItems.add(item);
-                behaviorResource.navigation.navigate(item);
-                lastItemNavigatedTo = item;
+                /*if (!behaviorResource.navigation.isNavigating()) {
+                 if (item.isVisible() || behaviorResource.info.getDistance(item) < 150 && item.getLocation().sub(behaviorResource.info.getLocation()).z < 50) {
+                 behaviorResource.move.moveTo(
+                 item.getLocation()
+                 .add(item.getLocation().sub(behaviorResource.info.getLocation()).getNormalized().scale(150)));
+                 return this;
+                 }
+                 }*/
+            } else {
+                // if not navigating to important item and new item belongs to important category than change target
+                if (!(lastItemNavigatedTo != null
+                        && behaviorResource.navigation.isNavigating()
+                        && ( // lastItem is important or new item is not important
+                        importantCategories.contains(lastItemNavigatedTo.getType().getCategory())
+                        || !importantCategories.contains(item.getType().getCategory())))) {
+                    SendMessageOfStoppingToNavigateToCertainItem();
+                    behaviorResource.tcClient.sendToTeamOthers(
+                            new TCStartToNavigateToItem(behaviorResource.info.getId(), item.getId()));
+                    // forbid me from navigating to this item
+                    behaviorResource.tabooItems.add(item, 20);
+                    behaviorResource.navigation.navigate(item);
+                    lastItemNavigatedTo = item;
+                }
             }
 
         }
@@ -177,6 +191,12 @@ public class ItemPickBehavior implements IBehavior {
             behaviorResource.tcClient.sendToTeamOthers(
                     new TcStopNavigatingToItem(behaviorResource.info.getId(), lastItemNavigatedTo.getId()));
         }
+    }
+
+    private void InitializeImportantCategories() {
+        importantCategories = new ArrayList<>();
+        importantCategories.add(ItemType.Category.HEALTH);
+        importantCategories.add(ItemType.Category.ARMOR);
     }
 
 }
