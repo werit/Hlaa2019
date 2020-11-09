@@ -11,6 +11,7 @@ import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
 import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
 import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils.IGetDistance;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
+import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.UT2004Skins;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.NavigationState;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
@@ -88,7 +89,8 @@ public class DuelBot extends UT2004BotModuleController {
                         navMeshModule, shoot,
                         weaponPrefs, weaponry,
                         players, senses,
-                        items,visibility));
+                        items,visibility,
+                null,move,new TabooSet<>(bot)));
     }
 
     @Override
