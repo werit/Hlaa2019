@@ -57,6 +57,7 @@ public class BehaviorResource {
     public final UT2004TCClient tcClient;
     public final AdvancedLocomotion move;
     public final TabooSet<Item> tabooItems;
+    public Player otherEnemy;
 
     public BehaviorResource(LogCategory log,
             AgentInfo info, IUT2004Navigation navigation,
@@ -65,7 +66,7 @@ public class BehaviorResource {
             Weaponry weaponry, Players players,
             Senses senses, Items items, Visibility visibility,
             UT2004TCClient tcClient, AdvancedLocomotion move,
-            TabooSet<Item> tabooItems) {
+            TabooSet<Item> tabooItems, Player otherEnemy) {
         this.log = log;
         this.info = info;
         this.navigation = navigation;
@@ -81,5 +82,6 @@ public class BehaviorResource {
         this.tcClient = tcClient;
         this.move = move;
         this.tabooItems = tabooItems;
+        this.otherEnemy = otherEnemy;
     }
 }

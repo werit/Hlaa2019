@@ -20,6 +20,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
 import hlaa.duelbot.Behavior.BehaviorResource;
 import hlaa.duelbot.Behavior.BotCapabilities;
 import hlaa.duelbot.Behavior.ConditionDto;
+import tdm.tc.msgs.TCFightingEnemy;
 
 /**
  *
@@ -51,6 +52,8 @@ public class FireAtEnemy implements IBehavior {
     @Override
     public IBehavior Execute() {
         if (behaviorResource.focusedEnemy.isVisible()) {
+            behaviorResource.tcClient.sendToTeamOthers(
+                    new TCFightingEnemy(behaviorResource.info.getId(), behaviorResource.focusedEnemy.getId()));
             if (IsUsableRocketLuncher()) {
                 //shooting under the feet
                 behaviorResource.shoot.shoot(behaviorResource.weaponry.getWeapon(UT2004ItemType.ROCKET_LAUNCHER), true, behaviorResource.focusedEnemy.getLocation().addZ(-100));

@@ -16,6 +16,7 @@
  */
 package hlaa.duelbot.Behavior;
 
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import hlaa.duelbot.Behavior.BehaviorLogic.CoverMoveBehavior;
 import hlaa.duelbot.Behavior.BehaviorLogic.CoverShootingBehavior;
 import hlaa.duelbot.Behavior.BehaviorLogic.FireAtEnemy;
@@ -58,9 +59,10 @@ public class BehaviorManager {
         behaviors.add(new CoverMoveBehavior(4.5, behaviorResource));
     }
 
-    public BehaviorResource GetResources(){
+    public BehaviorResource GetResources() {
         return behaviorResource;
     }
+
     public void DoLogic() {
         /*
          if (combatBeh()) {
@@ -105,7 +107,8 @@ public class BehaviorManager {
             behaviorResource.log.log(Level.INFO, "Starting execution of {0}", executionBehav.GetBehaviorName());
             executionBehav.Execute();
         }
-
+        // reset to verify whether fight is still ongoing
+        behaviorResource.otherEnemy = null;
     }
 
     private void StopNotUsedBehaviors(List<IBehavior> previousBehaviors, List<IBehavior> currentBehaviors) {
@@ -133,10 +136,7 @@ public class BehaviorManager {
     }
 
     private ConditionDto EvaluateConditions() {
-        /*if (behaviorResource.focusedEnemy == null) {
-         return false;
-         }*/
-        behaviorResource.focusedEnemy = behaviorResource.players.getNearestVisibleEnemy();
+        ChooseFocusedEnemy();
 
         boolean isEnemyInFocus = behaviorResource.focusedEnemy != null;
         boolean isEnemyInFocusAtLocation = false;
@@ -158,6 +158,32 @@ public class BehaviorManager {
          return false;
          }*/
         return new ConditionDto(isEnemyInFocus, isEnemyInFocusAtLocation, isNotNavigating, isHealthBelow70);
+    }
+
+    private void ChooseFocusedEnemy() {
+
+        behaviorResource.focusedEnemy = behaviorResource.players.getNearestVisibleEnemy();
+
+        // navigate to other enemy only f you do not have enemy
+        if (behaviorResource.focusedEnemy == null) {
+            // if other enemy is null never mind, nothing will change otherwise we navigate to other enemy
+            behaviorResource.focusedEnemy = behaviorResource.otherEnemy;
+            return;
+        }
+
+        // enemy of other bot is visible
+        if (behaviorResource.otherEnemy != null
+                && behaviorResource.players.getVisibleEnemies().values().contains(behaviorResource.otherEnemy)) {
+            //nearest enemy is not enemy targeted by my ally
+            if (!behaviorResource.focusedEnemy.equals(behaviorResource.otherEnemy)) {
+                //have to choose one
+                // not sure how to get health bot who si not me
+                if (behaviorResource.focusedEnemy.getId().getLongId() < behaviorResource.otherEnemy.getId().getLongId()) {
+                    behaviorResource.focusedEnemy = behaviorResource.otherEnemy;
+                }
+            }
+        }
+
     }
 
     private List<IBehavior> GetBehaviorsRequiringCapabilities(List<IBehavior> behaviors, List<BotCapabilities> freeBotCapabilities) {

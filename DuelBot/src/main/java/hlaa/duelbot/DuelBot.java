@@ -89,8 +89,9 @@ public class DuelBot extends UT2004BotModuleController {
                         navMeshModule, shoot,
                         weaponPrefs, weaponry,
                         players, senses,
-                        items,visibility,
-                null,move,new TabooSet<>(bot)));
+                        items, visibility,
+                        null, move,
+                        new TabooSet<>(bot), null));
     }
 
     @Override
