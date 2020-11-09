@@ -377,7 +377,7 @@ public class TDMBot extends UT2004BotTCController<UT2004Bot> {
     public void tcStartToNavigateToItem(TCStartToNavigateToItem event) {
         log.warning("BOT " + event.getWho() + " IS GOING FOR " + event.getWhat());
         Item item =items.getItem(event.getWhat());
-        behaviorManager.GetResources().tabooItems.add(item);
+        behaviorManager.GetResources().tabooItems.add(item, 20);
     }
     /*
     Some bot is stopping navigating to the item
