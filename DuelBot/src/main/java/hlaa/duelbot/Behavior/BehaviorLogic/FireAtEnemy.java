@@ -50,11 +50,15 @@ public class FireAtEnemy implements IBehavior {
 
     @Override
     public IBehavior Execute() {
-        if (IsUsableRocketLuncher()) {
-            //shooting under the feet
-            behaviorResource.shoot.shoot(behaviorResource.weaponry.getWeapon(UT2004ItemType.ROCKET_LAUNCHER), true, behaviorResource.focusedEnemy.getLocation().addZ(-100));
+        if (behaviorResource.focusedEnemy.isVisible()) {
+            if (IsUsableRocketLuncher()) {
+                //shooting under the feet
+                behaviorResource.shoot.shoot(behaviorResource.weaponry.getWeapon(UT2004ItemType.ROCKET_LAUNCHER), true, behaviorResource.focusedEnemy.getLocation().addZ(-100));
+            } else {
+                behaviorResource.shoot.shoot(behaviorResource.weaponPrefs, behaviorResource.focusedEnemy);
+            }
         } else {
-            behaviorResource.shoot.shoot(behaviorResource.weaponPrefs, behaviorResource.focusedEnemy);
+            behaviorResource.shoot.stopShooting();
         }
 
         return this;
@@ -64,7 +68,7 @@ public class FireAtEnemy implements IBehavior {
         double distToTarget = Math.abs(behaviorResource.focusedEnemy.getLocation().getDistance(behaviorResource.info.getLocation()));
         return behaviorResource.weaponry.hasWeapon(UT2004ItemType.ROCKET_LAUNCHER)
                 && behaviorResource.weaponry.hasAmmo(UT2004ItemType.ROCKET_LAUNCHER)
-                && distToTarget > 100 
+                && distToTarget > 100
                 && distToTarget < 400;
     }
 
